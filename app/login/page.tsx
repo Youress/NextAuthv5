@@ -6,6 +6,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Form,
@@ -23,6 +24,8 @@ import { z } from "zod";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginWithCredential } from "./action";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -32,6 +35,7 @@ const formSchema = z.object({
 type formData = z.infer<typeof formSchema>;
 
 const LoginPage = () => {
+  const router = useRouter();
   const form = useForm<formData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,6 +48,11 @@ const LoginPage = () => {
       email: data.email,
       password: data.password,
     });
+    if (res?.error) {
+      form.setError("root", { message: res.message });
+    } else {
+      router.push("/account");
+    }
   };
 
   return (
@@ -86,6 +95,11 @@ const LoginPage = () => {
                     </FormItem>
                   )}
                 />
+                {!!form.formState.errors.root?.message && (
+                  <FormMessage>
+                    {form.formState.errors.root?.message}
+                  </FormMessage>
+                )}
                 <Button type="submit">
                   {form.formState.isSubmitting ? <Loading /> : "Login"}
                 </Button>
@@ -93,8 +107,16 @@ const LoginPage = () => {
             </form>
           </Form>
         </CardContent>
+        <CardFooter className="flex-col">
+          <div className="text-muted-foreground text-sm">
+            Don&apos;t have an account? <Link href="/register" className="underline">Register</Link>
+          </div>
+          <div className="text-muted-foreground text-sm">
+            Forget password? <Link href="/password-rest" className="underline">Reset my passowrd</Link>
+          </div>
+        </CardFooter>
       </Card>
-    </main>
+    </main>    
   );
 };
 

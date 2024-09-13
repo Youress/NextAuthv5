@@ -4,6 +4,7 @@ import { passworMatchdSchema } from "@/validation/passwordMatchSchema";
 import { z } from "zod";
 import prisma from "@/prisma/client";
 import { hash } from "bcryptjs";
+import { Prisma } from "@prisma/client";
 
 export default async function registerUser(formData: FormData) {
   try {
@@ -34,16 +35,17 @@ export default async function registerUser(formData: FormData) {
         password: hashedPassword,
       },
     });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e:any) {
-    if (e.code === "P2002")
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002")
+        return {
+          error: true,
+          message: "An account is alreaddy registered with that email",
+        };
       return {
         error: true,
-        message: "An account is alreaddy registered with that email",
+        message: "An error accured",
       };
-    return {
-      error: true,
-      message: "An error accured",
-    };
+    }
   }
 }

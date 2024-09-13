@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle,CardFooter
 } from "@/components/ui/card";
 import {
   Form,
@@ -127,6 +127,11 @@ const RegisterForm = () => {
               </form>
             </Form>
           </CardContent>
+          <CardFooter className="flex-col">
+          <div className="text-muted-foreground text-sm">
+            Already have an account? <Link href="/login" className="underline">Login</Link>
+          </div>
+        </CardFooter>
         </Card>
       )}
     </main>

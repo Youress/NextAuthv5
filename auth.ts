@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs"; // Make sure you have bcryptjs installed for password comparison
 
+//The useSession() hook provides access to the current user's Session object, as well as helpers for setting the active session.
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -36,8 +37,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
     }),
-  ],
-  pages: {
-    signIn: "/login", // Custom sign-in page path (optional)
-  },
+  ]
 });
