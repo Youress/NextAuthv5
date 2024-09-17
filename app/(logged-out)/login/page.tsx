@@ -48,6 +48,7 @@ const LoginPage = () => {
       email: data.email,
       password: data.password,
     });
+    // if there no error, push user to dashboard account
     if (res?.error) {
       form.setError("root", { message: res.message });
     } else {

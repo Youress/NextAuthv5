@@ -27,7 +27,7 @@ export default async function registerUser(formData: FormData) {
           newUserValidation.error.issues[0]?.message ?? "An error accured",
       };
     }
-
+   //Asynchronously generates a hash for the given string.
     const hashedPassword = await hash(rawFormData.password, 10);
     await prisma.user.create({
       data: {
@@ -37,6 +37,7 @@ export default async function registerUser(formData: FormData) {
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2002 error code for Unique constraint failed on the {constraint}
       if (error.code === "P2002")
         return {
           error: true,
