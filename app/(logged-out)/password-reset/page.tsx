@@ -23,6 +23,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from 'next/navigation'
+import { passwordReset } from "./action";
 
 
 const formSchema = z.object({
@@ -30,14 +32,17 @@ const formSchema = z.object({
 });
 
 const PasswordReset = () => {
+    const email = useSearchParams().get("email") 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email:decodeURIComponent( email ?? "") ,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {};
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await passwordReset(values.email)
+  };
   return (
     <main className="flex justify-center items-center min-h-screen">
       <Card className="w-[350px]">

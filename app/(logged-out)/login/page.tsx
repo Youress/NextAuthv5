@@ -56,6 +56,8 @@ const LoginPage = () => {
     }
   };
 
+  const email = form.getValues("email")
+
   return (
     <main className="flex justify-center items-center min-h-screen">
       <Card className="w-[350px] ">
@@ -113,7 +115,7 @@ const LoginPage = () => {
             Don&apos;t have an account? <Link href="/register" className="underline">Register</Link>
           </div>
           <div className="text-muted-foreground text-sm">
-            Forget password? <Link href="/password-reset" className="underline">Reset my passowrd</Link>
+            Forget password? <Link href={`/password-reset${email ? `?email=${encodeURIComponent(email)}` : ""}`} className="underline">Reset my passowrd</Link>
           </div>
         </CardFooter>
       </Card>
