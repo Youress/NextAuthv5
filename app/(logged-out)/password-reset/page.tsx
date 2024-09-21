@@ -25,6 +25,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import { passwordReset } from "./action";
+import { useToast } from "@/hooks/use-toast";
+
 
 
 const formSchema = z.object({
@@ -32,6 +34,7 @@ const formSchema = z.object({
 });
 
 const PasswordReset = () => {
+  const {toast} = useToast()
     const email = useSearchParams().get("email") 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,11 +44,21 @@ const PasswordReset = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await passwordReset(values.email)
+  await passwordReset(values.email)
+   
   };
   return (
     <main className="flex justify-center items-center min-h-screen">
+      {form.formState.isSubmitSuccessful  ? 
       <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle>Email Sent</CardTitle>
+        </CardHeader>
+        <CardContent>
+          if you an account with us you will recieve a password reset email at {form.getValues("email")}
+        </CardContent>
+
+      </Card> :<Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Passowrd Reset</CardTitle>
           <CardDescription>
@@ -92,7 +105,8 @@ const PasswordReset = () => {
             Don&apos;t have an account? <Link href="/register" className="underline">Register</Link>
           </div>
         </CardFooter>
-      </Card>
+      </Card> }
+      
     </main>
   );
 };

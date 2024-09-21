@@ -22,13 +22,13 @@ model User {
   TwoFactorAuthSecret    String?              @db.VarChar(255)
   TwoFactorAuthActivated Boolean              @default(false)
   updatedAt              DateTime             @updatedAt
-  Token      Token []
+  Token      Token?
 }
 
 model Token  {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int
-  token      String?  @db.Text()
+  userId     Int @unique
+  token      String  @db.Text() 
   expiration DateTime
 }
