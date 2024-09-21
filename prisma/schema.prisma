@@ -13,12 +13,22 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
 model User {
-  id                     Int      @id @default(autoincrement())
-  password               String   @db.Char(60)
-  email                  String   @unique @db.VarChar(100)
-  createdAt              DateTime @default(now())
-  TwoFactorAuthSecret    String?  @db.VarChar(255)
-  TwoFactorAuthActivated Boolean  @default(false)
-  updatedAt              DateTime @updatedAt
+  id                     Int                  @id @default(autoincrement())
+  password               String               @db.Char(60)
+  email                  String               @unique @db.VarChar(100)
+  createdAt              DateTime             @default(now())
+  TwoFactorAuthSecret    String?              @db.VarChar(255)
+  TwoFactorAuthActivated Boolean              @default(false)
+  updatedAt              DateTime             @updatedAt
+  Token      Token []
+}
+
+model Token  {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  token      String?  @db.Text()
+  expiration DateTime
 }
