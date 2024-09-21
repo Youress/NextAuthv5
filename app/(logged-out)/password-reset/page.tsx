@@ -1,67 +1,51 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import {
-  Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
+  Form,
 } from "@/components/ui/form";
 import Loading from "@/components/ui/Loading";
 import { Input } from "@/components/ui/input";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginWithCredential } from "./action";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: passwordSchema,
 });
 
-type formData = z.infer<typeof formSchema>;
-
-const LoginPage = () => {
-  const router = useRouter();
-  const form = useForm<formData>({
+const PasswordReset = () => {
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
-  const onSubmit = async (data: formData) => {
-    const res = await loginWithCredential({
-      email: data.email,
-      password: data.password,
-    });
-    // if there no error, push user to dashboard account
-    if (res?.error) {
-      form.setError("root", { message: res.message });
-    } else {
-      router.push("/account");
-    }
-  };
 
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {};
   return (
     <main className="flex justify-center items-center min-h-screen">
-      <Card className="w-[350px] ">
-        <CardHeader className="">
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account</CardDescription>
+      <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle>Passowrd Reset</CardTitle>
+          <CardDescription>
+            Enter Your email address to reset your password
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -83,42 +67,29 @@ const LoginPage = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="password" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 {!!form.formState.errors.root?.message && (
                   <FormMessage>
                     {form.formState.errors.root?.message}
                   </FormMessage>
                 )}
                 <Button type="submit">
-                  {form.formState.isSubmitting ? <Loading /> : "Login"}
+                  {form.formState.isSubmitting ? <Loading /> : "Submit"}
                 </Button>
               </fieldset>
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex-col">
+        <CardFooter className="flex flex-col gap-2">
+        <div className="text-muted-foreground text-sm">
+            Remember your password? <Link href="/login" className="underline">Login</Link>
+          </div>
           <div className="text-muted-foreground text-sm">
             Don&apos;t have an account? <Link href="/register" className="underline">Register</Link>
           </div>
-          <div className="text-muted-foreground text-sm">
-            Forget password? <Link href="/password-reset" className="underline">Reset my passowrd</Link>
-          </div>
         </CardFooter>
       </Card>
-    </main>    
+    </main>
   );
 };
 
-export default LoginPage;
+export default PasswordReset;
