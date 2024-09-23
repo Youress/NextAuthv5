@@ -17,14 +17,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { updatePassword } from "./action";
+import Link from "next/link";
 
-const formSchema = passworMatchdSchema
+const formSchema = passworMatchdSchema;
 
 type formData = z.infer<typeof formSchema>;
 type Props = {
-    token : string;
-}
-const UpdatePasswordForm = ({token}:Props) => {
+  token: string;
+};
+const UpdatePasswordForm = ({ token }: Props) => {
   const { toast } = useToast();
 
   const form = useForm<formData>({
@@ -37,64 +38,75 @@ const UpdatePasswordForm = ({token}:Props) => {
 
   const onSubmit = async (values: formData) => {
     const response = await updatePassword({
-    token,
+      token,
       password: values.password,
       passwordConfirm: values.passwordConfirm,
     });
+    if (response?.tokenInvalid) {
+      window.location.reload;
+    }
     if (response?.error) {
       form.setError("root", {
         message: response.message,
-      })
-    }else {
+      });
+    } else {
       toast({
-        title : "Password Change",
-        description : "Your Password has been updated",
-        className : "bg-green-500 text-white"
-      })
+        title: "Password Change",
+        description: "Your Password has been updated",
+        className: "bg-green-500 text-white",
+      });
     }
-    form.reset()
-
+    form.reset();
   };
   return (
     <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <fieldset
-            className="flex flex-col gap-4"
-            disabled={form.formState.isSubmitting}
-          >
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="password" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="passwordConfirm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="password" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">
-              {form.formState.isSubmitting ? <Loading /> : "Update Password"}
-            </Button>
-          </fieldset>
-        </form>
-      </Form>
+      {form.formState.isSubmitSuccessful ? (
+        <div>
+          Your password has been updated.
+          <Link className="underline" href="/login">
+            Click here to Login
+          </Link>
+        </div>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <fieldset
+              className="flex flex-col gap-4"
+              disabled={form.formState.isSubmitting}
+            >
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="password" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="passwordConfirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm password</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="password" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">
+                {form.formState.isSubmitting ? <Loading /> : "Update Password"}
+              </Button>
+            </fieldset>
+          </form>
+        </Form>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
+import { mailer } from "@/lib/email";
 import prisma from "@/prisma/client";
 import { randomBytes } from "crypto";
 
@@ -49,6 +50,16 @@ export const passwordReset = async (emailAddress: string) => {
       expiration: expiration,
     },
   });
+
+  const resetLink = `${process.env.SITE_BASE_URL}/update-password?token=${passwordResetToken}`;
+
+  await mailer.sendMail({
+    from : "test@resend.dev",
+    subject : "Your password reset test",
+    to : emailAddress,
+    html : `hey , ${emailAddress}, You requested to reset your password.
+here your link reset password, the link will expire in 1 hour. <a href=${resetLink}>Link</a>`,
+  })
 
   return {
     success: true,
