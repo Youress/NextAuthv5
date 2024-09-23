@@ -32,44 +32,26 @@ export const passwordReset = async (emailAddress: string) => {
 
   // Generate a new password reset token and set expiration
   const passwordResetToken = randomBytes(32).toString("hex");
-  const expiration = new Date(Date.now() + 3600000); // 1 hour expiration
+  const expiration = new Date(Date.now() + 3600000); // 1-hour expiration
 
-  // Check if a reset token already exists for this user
-  const existingToken = await prisma.token.findUnique({
+  // Upsert the token in the database
+  await prisma.token.upsert({
     where: {
       userId: user.id,
     },
+    create: {
+      userId: user.id,
+      token: passwordResetToken,
+      expiration: expiration,
+    },
+    update: {
+      token: passwordResetToken,
+      expiration: expiration,
+    },
   });
 
-  // If token exists, update the existing token
-  if (existingToken) {
-    await prisma.token.update({
-      where: {
-        userId: user.id,
-      },
-      data: {
-        token: passwordResetToken,
-        expiration: expiration,
-      },
-    });
-
-    return {
-      success: true,
-      message: "Password reset token updated. Please check your email.",
-    };
-  } else {
-    // Otherwise, create a new token
-    await prisma.token.create({
-      data: {
-        userId: user.id,
-        token: passwordResetToken,
-        expiration: expiration,
-      },
-    });
-
-    return {
-      success: true,
-      message: "Password reset token created. Please check your email.",
-    };
-  }
+  return {
+    success: true,
+    message: "Password reset token created. Please check your email.",
+  };
 };

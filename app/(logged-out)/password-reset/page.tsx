@@ -25,7 +25,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation'
 import { passwordReset } from "./action";
-import { useToast } from "@/hooks/use-toast";
 
 
 
@@ -34,7 +33,6 @@ const formSchema = z.object({
 });
 
 const PasswordReset = () => {
-  const {toast} = useToast()
     const email = useSearchParams().get("email") 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +53,7 @@ const PasswordReset = () => {
           <CardTitle>Email Sent</CardTitle>
         </CardHeader>
         <CardContent>
-          if you an account with us you will recieve a password reset email at {form.getValues("email")}
+          please check your email adress : {form.getValues("email")}
         </CardContent>
 
       </Card> :<Card className="w-[350px]">
