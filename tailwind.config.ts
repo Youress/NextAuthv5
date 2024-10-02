@@ -58,7 +58,8 @@ const config: Config = {
   		},
 		fontFamily:{
 			"sans" : 'var(--font-geist-sans)'
-		}
+		},
+		
   	}
   },
   plugins: [require("tailwindcss-animate")],
