@@ -14,17 +14,14 @@ const Myaccount = async () => {
       id : parseInt(session!.user!.id!)
     }
   })
-  user!.TwoFactorAuthActivated
   return (
     <Card className="w-[350px]">
       <CardHeader><CardTitle>My Account</CardTitle></CardHeader>
-        
         <CardContent>
           <Label>Email Adress</Label>
           <div className="text-muted-foreground">{session?.user?.email}</div>
           <TwoFactorAuthForm twoFactorActivated={user!.TwoFactorAuthActivated ?? false}/>
         </CardContent>
-      
     </Card>
   );
 };
