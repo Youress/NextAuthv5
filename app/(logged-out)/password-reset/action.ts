@@ -54,7 +54,7 @@ export const passwordReset = async (emailAddress: string) => {
   const resetLink = `${process.env.SITE_BASE_URL}/update-password?token=${passwordResetToken}`;
 
   await mailer.sendMail({
-    from : "test@resend.dev",
+    from : "web@youssefessouairi.website",
     subject : "Your password reset test",
     to : emailAddress,
     html : `hey , ${emailAddress}, You requested to reset your password.

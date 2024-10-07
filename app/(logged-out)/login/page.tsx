@@ -57,7 +57,6 @@ const LoginPage = () => {
       email: data.email,
       password: data.password,
     });
-    console.log(preLoginCheckRes.TwoFactorAuthActivated);
 
     if (preLoginCheckRes.error) {
       form.setError("root", { message: preLoginCheckRes.message });
