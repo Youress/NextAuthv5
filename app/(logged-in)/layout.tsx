@@ -10,7 +10,6 @@ interface children {
 
 const LoggedInLayout = async ({ children }: children) => {
   const session = await auth();
-  console.log({session})
   if(!session?.user?.id){
     redirect("/login")
 }
